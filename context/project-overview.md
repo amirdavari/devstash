@@ -448,6 +448,17 @@ STRIPE_PRICE_YEARLY=
 
 **Micro-interactions** — smooth transitions, card hover states, toast notifications for actions, loading skeletons.
 
+### 10.1 Screenshots
+
+Refer to the screenshots below as a base for the dashboard UI. It does not have to be exact. Use it as a reference.
+
+- @context/screenshots/Dashboard-ui-main-dark.png
+- @context/screenshots/Dashboard-ui-main-light.png
+- @context/screenshots/Dashboard-ui-drawer-dark.png
+- @context/screenshots/Dashboard-ui-drawer-light-png
+
+
+
 ---
 
 ## 11. Suggested Build Order
