@@ -1,0 +1,180 @@
+// prisma/schema.prisma
+// Prisma 7 ships the Rust-free client via the new `prisma-client` generator,
+// which requires an explicit output path.
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  // Prisma 7: connection URLs live in prisma.config.ts, not here.
+  provider = "postgresql"
+}
+
+enum ContentType {
+  TEXT
+  URL
+  FILE
+}
+
+// ─────────────────────────────  App models  ─────────────────────────────
+
+model Item {
+  id          String      @id @default(cuid())
+  title       String
+  contentType ContentType @default(TEXT)
+  content     String? // text body (snippet/note/prompt/command); null for url/file
+  url         String? // for link items
+  fileUrl     String? // R2 object URL; null unless FILE
+  fileName    String? // original filename
+  fileSize    Int? // bytes
+  description String?
+  language    String? // optional, drives syntax highlighting
+  isFavorite  Boolean     @default(false)
+  isPinned    Boolean     @default(false)
+  lastUsedAt  DateTime? // powers "recently used"
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+
+  userId     String
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  itemTypeId String
+  itemType   ItemType @relation(fields: [itemTypeId], references: [id])
+
+  collections ItemCollection[]
+  tags        ItemTag[]
+
+  @@index([userId])
+  @@index([userId, itemTypeId])
+}
+
+model ItemType {
+  id       String  @id @default(cuid())
+  name     String // "snippet", "prompt", ...
+  icon     String // lucide icon name, e.g. "Code"
+  color    String // hex, e.g. "#3b82f6"
+  isSystem Boolean @default(false)
+
+  userId String? // null for system types
+  user   User?   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  items       Item[]
+  collections Collection[] // back-reference for Collection.defaultType
+
+  @@unique([userId, name])
+}
+
+model Collection {
+  id          String  @id @default(cuid())
+  name        String // "React Hooks", "Prototype Prompts", ...
+  description String?
+  isFavorite  Boolean @default(false)
+
+  defaultTypeId String? // default type for new items in an empty collection
+  defaultType   ItemType? @relation(fields: [defaultTypeId], references: [id])
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  items ItemCollection[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId])
+}
+
+model ItemCollection {
+  itemId       String
+  collectionId String
+  addedAt      DateTime @default(now()) // tracks when the item was added
+
+  item       Item       @relation(fields: [itemId], references: [id], onDelete: Cascade)
+  collection Collection @relation(fields: [collectionId], references: [id], onDelete: Cascade)
+
+  @@id([itemId, collectionId])
+  @@index([collectionId])
+}
+
+model Tag {
+  id     String    @id @default(cuid())
+  name   String
+  userId String
+  user   User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  items  ItemTag[]
+
+  @@unique([userId, name])
+}
+
+model ItemTag {
+  itemId String
+  tagId  String
+  item   Item @relation(fields: [itemId], references: [id], onDelete: Cascade)
+  tag    Tag  @relation(fields: [tagId], references: [id], onDelete: Cascade)
+
+  @@id([itemId, tagId])
+  @@index([tagId])
+}
+
+// ─────────────────────  Auth.js (NextAuth v5) + billing  ─────────────────────
+
+model User {
+  id            String    @id @default(cuid())
+  name          String?
+  email         String    @unique
+  emailVerified DateTime?
+  image         String?
+  passwordHash  String? // for email/password credentials
+
+  // Billing
+  isPro                Boolean @default(false)
+  stripeCustomerId     String? @unique
+  stripeSubscriptionId String? @unique
+
+  // App data
+  items       Item[]
+  itemTypes   ItemType[]
+  collections Collection[]
+  tags        Tag[]
+
+  // Auth.js
+  accounts Account[]
+  sessions Session[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String?
+  access_token      String?
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?
+  session_state     String?
+  user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model VerificationToken {
+  identifier String
+  token      String
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
