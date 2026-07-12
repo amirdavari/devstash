@@ -1,5 +1,6 @@
 import { currentUser } from "@/lib/mock-data";
 import { getCollectionCount, getItemCount } from "@/lib/db/collections";
+import { getRecentItems } from "@/lib/db/items";
 import { CollectionsSection } from "@/components/dashboard/collections-section";
 import { RecentItems } from "@/components/dashboard/recent-items";
 import { StatsCards } from "@/components/dashboard/stats-cards";
@@ -17,9 +18,10 @@ function greetingForHour(hour: number) {
 export default async function DashboardPage() {
   const firstName = currentUser.name.split(" ")[0];
   const greeting = greetingForHour(new Date().getHours());
-  const [itemCount, collectionCount] = await Promise.all([
+  const [itemCount, collectionCount, recentItems] = await Promise.all([
     getItemCount(),
     getCollectionCount(),
+    getRecentItems(),
   ]);
 
   return (
@@ -35,7 +37,7 @@ export default async function DashboardPage() {
 
       <StatsCards />
       <CollectionsSection />
-      <RecentItems />
+      <RecentItems items={recentItems} />
     </div>
   );
 }
