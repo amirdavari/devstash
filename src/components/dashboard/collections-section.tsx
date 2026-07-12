@@ -1,10 +1,12 @@
 import Link from "next/link";
 import { ChevronRight } from "lucide-react";
 
-import { collections } from "@/lib/mock-data";
+import { getRecentCollections } from "@/lib/db/collections";
 import { CollectionCard } from "@/components/dashboard/collection-card";
 
-export function CollectionsSection() {
+export async function CollectionsSection() {
+  const collections = await getRecentCollections();
+
   return (
     <section className="space-y-4">
       <div className="flex items-center justify-between">
