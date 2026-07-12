@@ -1,20 +1,25 @@
 import Link from "next/link";
 import { Star } from "lucide-react";
 
-import type { Collection } from "@/lib/mock-data";
-import { itemTypeById, typeIcon } from "@/lib/item-types";
+import type { CollectionCardData } from "@/lib/db/collections";
+import { typeIcon } from "@/lib/item-types";
 
-// A single color-coded collection card. Accent tints the border and background;
-// the footer badges show the type breakdown of what's inside.
-export function CollectionCard({ collection }: { collection: Collection }) {
+// A single color-coded collection card. A thick accent-colored left border marks
+// the collection's dominant type; the accent also faintly tints the background,
+// and the footer badges show the type breakdown of what's inside.
+export function CollectionCard({
+  collection,
+}: {
+  collection: CollectionCardData;
+}) {
   const { accentColor: accent } = collection;
 
   return (
     <Link
       href={`/collections/${collection.id}`}
-      className="group flex min-h-28 flex-col justify-between gap-4 rounded-xl border p-4 transition-all hover:-translate-y-0.5 hover:shadow-md"
+      className="group flex min-h-28 flex-col justify-between gap-4 rounded-xl border border-l-4 p-4 transition-all hover:-translate-y-0.5 hover:shadow-md"
       style={{
-        borderColor: `color-mix(in oklab, ${accent} 45%, transparent)`,
+        borderLeftColor: accent,
         background: `color-mix(in oklab, ${accent} 7%, var(--card))`,
       }}
     >
@@ -32,16 +37,14 @@ export function CollectionCard({ collection }: { collection: Collection }) {
 
       <div className="flex flex-wrap gap-1.5">
         {collection.breakdown.map((entry) => {
-          const type = itemTypeById[entry.typeId];
-          if (!type) return null;
-          const Icon = typeIcon(type.icon);
+          const Icon = typeIcon(entry.icon);
           return (
             <span
               key={entry.typeId}
               className="text-caption inline-flex items-center gap-1 rounded-md px-1.5 py-0.5"
               style={{
-                color: type.color,
-                backgroundColor: `color-mix(in oklab, ${type.color} 15%, transparent)`,
+                color: entry.color,
+                backgroundColor: `color-mix(in oklab, ${entry.color} 15%, transparent)`,
               }}
             >
               <Icon className="size-3" />
