@@ -1,17 +1,21 @@
+import { DashboardHeader } from "@/components/dashboard/dashboard-header";
 import { DashboardSidebar } from "@/components/dashboard/dashboard-sidebar";
+import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 
-// Dashboard shell: sidebar + main content area.
-// Phase 1 wires the two-column layout; phases 2–3 fill in the sidebar
-// and the main dashboard content.
+// Dashboard shell: collapsible sidebar + main content area.
+// Phase 2 fills in the sidebar; phase 3 fills in the main content.
 export default function DashboardLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
   return (
-    <div className="flex min-h-full flex-1">
+    <SidebarProvider>
       <DashboardSidebar />
-      <main className="flex-1 overflow-y-auto p-6">{children}</main>
-    </div>
+      <SidebarInset>
+        <DashboardHeader />
+        <div className="flex-1 overflow-y-auto p-6">{children}</div>
+      </SidebarInset>
+    </SidebarProvider>
   );
 }
