@@ -50,6 +50,60 @@
     --radius-4xl: calc(var(--radius) * 2.6);
 }
 
+/* Type scale — from the design spec. Each token bundles size + line-height +
+   weight (+ letter-spacing for titles/labels) so a single `text-*` utility
+   carries the full role. Headings use -0.02em; uppercase labels use 0.04em. */
+@theme {
+    --text-page-title: 28px;
+    --text-page-title--line-height: 36px;
+    --text-page-title--font-weight: 700;
+    --text-page-title--letter-spacing: -0.02em;
+
+    --text-section-title: 20px;
+    --text-section-title--line-height: 28px;
+    --text-section-title--font-weight: 600;
+    --text-section-title--letter-spacing: -0.02em;
+
+    --text-card-title: 16px;
+    --text-card-title--line-height: 22px;
+    --text-card-title--font-weight: 600;
+    --text-card-title--letter-spacing: -0.02em;
+
+    --text-body-lg: 14px;
+    --text-body-lg--line-height: 20px;
+    --text-body-lg--font-weight: 400;
+
+    --text-body: 13px;
+    --text-body--line-height: 18px;
+    --text-body--font-weight: 400;
+
+    --text-meta: 12px;
+    --text-meta--line-height: 16px;
+    --text-meta--font-weight: 400;
+
+    --text-caption: 11px;
+    --text-caption--line-height: 14px;
+    --text-caption--font-weight: 600;
+
+    --text-sidebar-item: 14px;
+    --text-sidebar-item--line-height: 20px;
+    --text-sidebar-item--font-weight: 500;
+
+    --text-sidebar-label: 11px;
+    --text-sidebar-label--line-height: 16px;
+    --text-sidebar-label--font-weight: 600;
+    --text-sidebar-label--letter-spacing: 0.04em;
+
+    --text-stat: 28px;
+    --text-stat--line-height: 32px;
+    --text-stat--font-weight: 700;
+    --text-stat--letter-spacing: -0.02em;
+
+    --text-button: 14px;
+    --text-button--line-height: 20px;
+    --text-button--font-weight: 600;
+}
+
 :root {
     --background: oklch(1 0 0);
     --foreground: oklch(0.145 0 0);

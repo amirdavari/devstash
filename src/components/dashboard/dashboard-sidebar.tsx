@@ -2,22 +2,10 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import {
-  Boxes,
-  Code,
-  File as FileIcon,
-  Image as ImageIcon,
-  Link as LinkIcon,
-  type LucideIcon,
-  Plus,
-  Search,
-  Settings2,
-  Sparkles,
-  StickyNote,
-  Terminal,
-} from "lucide-react";
+import { Boxes, Plus, Search, Settings2 } from "lucide-react";
 
 import { collections, currentUser, itemTypes } from "@/lib/mock-data";
+import { typeIcon } from "@/lib/item-types";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -35,17 +23,6 @@ import {
   SidebarMenuItem,
   SidebarTrigger,
 } from "@/components/ui/sidebar";
-
-// Maps the lucide icon names stored on ItemType.icon to their components.
-const ICON_MAP: Record<string, LucideIcon> = {
-  Code,
-  Sparkles,
-  StickyNote,
-  Terminal,
-  Link: LinkIcon,
-  File: FileIcon,
-  Image: ImageIcon,
-};
 
 // Type-scoped list route, e.g. "Snippets" -> /items/snippets.
 const typeHref = (label: string) => `/items/${label.toLowerCase()}`;
@@ -76,7 +53,7 @@ export function DashboardSidebar() {
         </div>
 
         <Button
-          className="w-full justify-center bg-brand text-brand-foreground hover:bg-brand/90 group-data-[collapsible=icon]:size-8! group-data-[collapsible=icon]:p-0!"
+          className="w-full justify-center font-semibold bg-brand text-brand-foreground hover:bg-brand/90 group-data-[collapsible=icon]:size-8! group-data-[collapsible=icon]:p-0!"
           size="lg"
         >
           <Plus />
@@ -96,14 +73,17 @@ export function DashboardSidebar() {
 
       <SidebarContent>
         <SidebarGroup>
-          <SidebarGroupLabel>Types</SidebarGroupLabel>
+          <SidebarGroupLabel className="text-sidebar-label! font-semibold uppercase">
+            Types
+          </SidebarGroupLabel>
           <SidebarMenu>
             {itemTypes.map((type) => {
-              const Icon = ICON_MAP[type.icon] ?? FileIcon;
+              const Icon = typeIcon(type.icon);
               const href = typeHref(type.label);
               return (
                 <SidebarMenuItem key={type.id}>
                   <SidebarMenuButton
+                    className="text-sidebar-item"
                     isActive={pathname === href}
                     tooltip={type.label}
                     render={<Link href={href} />}
@@ -119,7 +99,9 @@ export function DashboardSidebar() {
         </SidebarGroup>
 
         <SidebarGroup>
-          <SidebarGroupLabel>Collections</SidebarGroupLabel>
+          <SidebarGroupLabel className="text-sidebar-label! font-semibold uppercase">
+            Collections
+          </SidebarGroupLabel>
           <SidebarGroupAction title="New collection">
             <Plus />
             <span className="sr-only">New collection</span>
@@ -130,6 +112,7 @@ export function DashboardSidebar() {
               return (
                 <SidebarMenuItem key={collection.id}>
                   <SidebarMenuButton
+                    className="text-sidebar-item"
                     isActive={pathname === href}
                     tooltip={collection.name}
                     render={<Link href={href} />}
