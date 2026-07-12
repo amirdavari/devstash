@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 
-import { recentItems } from "@/lib/mock-data";
+import type { ItemCardData } from "@/lib/db/items";
 import { cn } from "@/lib/utils";
 import { ItemCard } from "@/components/dashboard/item-card";
 
@@ -14,16 +14,17 @@ const FILTERS = [
 
 type FilterKey = (typeof FILTERS)[number]["key"];
 
-export function RecentItems() {
+export function RecentItems({ items: allItems }: { items: ItemCardData[] }) {
   const [filter, setFilter] = useState<FilterKey>("all");
 
-  const items = recentItems
-    .filter((item) => {
-      if (filter === "pinned") return item.isPinned;
-      if (filter === "favorites") return item.isFavorite;
-      return true;
-    })
-    .slice(0, 10);
+  // Nothing to show at all — hide the whole section.
+  if (allItems.length === 0) return null;
+
+  const items = allItems.filter((item) => {
+    if (filter === "pinned") return item.isPinned;
+    if (filter === "favorites") return item.isFavorite;
+    return true;
+  });
 
   return (
     <section className="space-y-4">
@@ -48,11 +49,8 @@ export function RecentItems() {
         </div>
       </div>
 
-      {items.length === 0 ? (
-        <p className="text-body text-muted-foreground">
-          No items match this filter.
-        </p>
-      ) : (
+      {/* No pinned / favorite items for this filter — show nothing there. */}
+      {items.length > 0 && (
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
           {items.map((item) => (
             <ItemCard key={item.id} item={item} />

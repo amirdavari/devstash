@@ -1,18 +1,15 @@
 import { createElement } from "react";
 import { Pin, Star } from "lucide-react";
 
-import type { Item } from "@/lib/mock-data";
-import { itemTypeById, typeIcon } from "@/lib/item-types";
+import type { ItemCardData } from "@/lib/db/items";
+import { typeIcon } from "@/lib/item-types";
 
 // A single recent-item card. The left edge is colored by the item's type; the
 // meta line combines the item's primary detail (language / host / size) with
 // its collection.
-export function ItemCard({ item }: { item: Item }) {
-  const type = itemTypeById[item.typeId];
-  const color = type?.color ?? "#6b7280";
-
-  const primary = item.language ?? item.description ?? item.fileSize;
-  const meta = [primary, item.collectionName].filter(Boolean).join(" · ");
+export function ItemCard({ item }: { item: ItemCardData }) {
+  const color = item.type.color;
+  const meta = [item.detail, item.collectionName].filter(Boolean).join(" · ");
 
   return (
     <div
@@ -30,7 +27,7 @@ export function ItemCard({ item }: { item: Item }) {
           >
             {/* Render the dynamically-selected icon without binding a
                 component in render scope (react-hooks/static-components). */}
-            {createElement(typeIcon(type?.icon ?? "File"), {
+            {createElement(typeIcon(item.type.icon), {
               className: "size-3.5",
             })}
           </span>
@@ -38,7 +35,7 @@ export function ItemCard({ item }: { item: Item }) {
             className="text-caption tracking-[0.04em] uppercase"
             style={{ color }}
           >
-            {type?.name ?? "item"}
+            {item.type.name}
           </span>
         </div>
         <div className="flex items-center gap-1.5 text-muted-foreground">
