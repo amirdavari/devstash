@@ -7,8 +7,10 @@ This is phase 2 of 3 for the dashboard UI layout. Use the screenshot referenced 
 ## Requirements for phase 2
 
 - Collapsible sidebar
+- Logo and title of the site
+- New Item button
+- Search Input
 - Items/types with links to /items/TYPE (eg.items/snippets)
-- Favorite collections
 - Most recent collections
 - User avatar area at the bottom
 - Drawer icon to open/close sidebar
@@ -16,7 +18,7 @@ This is phase 2 of 3 for the dashboard UI layout. Use the screenshot referenced 
 
 ## References
 
-- @context/screenshots/dashboard-ui-main.png
+- @context/screenshots/dashboard-ui-main-dark.png
 - @context/project-overview.md
 - @src/lib/mock-data.ts
 - @context/features/dashboard-phase-1-spec.md
