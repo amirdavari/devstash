@@ -45,6 +45,56 @@ async function main() {
     console.log(`✓ Found ${systemTypes.length} system item types:`)
     console.table(systemTypes)
   }
+
+  // 4. Is the demo data seeded? Show the demo user and their collections/items.
+  const demoUser = await prisma.user.findUnique({
+    where: { email: 'demo@devstash.io' },
+    include: {
+      collections: {
+        orderBy: { name: 'asc' },
+        include: {
+          items: {
+            orderBy: { item: { title: 'asc' } },
+            include: { item: { include: { itemType: true } } },
+          },
+        },
+      },
+    },
+  })
+
+  if (!demoUser) {
+    console.warn('⚠ Demo user not found — run `npm run db:seed`.')
+    return
+  }
+
+  console.log(
+    `✓ Demo user: ${demoUser.name} <${demoUser.email}> — Pro: ${demoUser.isPro}, verified: ${demoUser.emailVerified ? 'yes' : 'no'}`,
+  )
+
+  const totalItems = await prisma.item.count({ where: { userId: demoUser.id } })
+  console.log(
+    `✓ ${demoUser.collections.length} collections, ${totalItems} items:`,
+  )
+  console.table(
+    demoUser.collections.map((c) => ({
+      collection: c.name,
+      items: c.items.length,
+      description: c.description,
+    })),
+  )
+
+  // Full item breakdown, grouped by collection.
+  for (const collection of demoUser.collections) {
+    console.log(`\n  ▸ ${collection.name} (${collection.items.length})`)
+    console.table(
+      collection.items.map(({ item }) => ({
+        title: item.title,
+        type: item.itemType.name,
+        contentType: item.contentType,
+        target: item.url ?? item.content?.split('\n')[0] ?? '',
+      })),
+    )
+  }
 }
 
 main()
