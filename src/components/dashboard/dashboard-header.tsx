@@ -2,6 +2,7 @@
 
 import { LayoutDashboard } from "lucide-react";
 
+import { ThemeToggle } from "@/components/theme/theme-toggle";
 import { SidebarTrigger, useSidebar } from "@/components/ui/sidebar";
 
 // Top bar of the dashboard. The sidebar owns its own collapse trigger while
@@ -17,6 +18,9 @@ export function DashboardHeader() {
       <div className="flex items-center gap-2 text-sm font-medium">
         <LayoutDashboard className="size-4 text-muted-foreground" />
         Dashboard
+      </div>
+      <div className="ml-auto">
+        <ThemeToggle />
       </div>
     </header>
   );

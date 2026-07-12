@@ -6,15 +6,18 @@ This is phase 3 of 3 for the dashboard UI layout. Use the screenshot referenced 
 
 ## Requirements for phase 3
 
+- The Theme Button in the Topbar
 - The main area to the right
 - Recent collections
 - Pinned Items
 - 10 Recent items
 - 4 stats cards at the top for number of items, collections, favorite items and favorite collections (Not in screenshot)
+- Implementing the Dark and Light themes
 
 ## References
 
 - @context/screenshots/dashboard-ui-main.png
+- @context/screenshots/dashboard-ui-light.png
 - @context/project-overview.md
 - @src/lib/mock-data.js
 - @context/features/dashboard-phase-1-spec.md
